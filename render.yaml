@@ -2,6 +2,7 @@ services:
   - type: web
     name: mediinsight-backend
     env: docker
+    plan: free
     region: ohio
     dockerfilePath: ./backend/Dockerfile
     envVars:
@@ -16,4 +17,5 @@ databases:
   - name: mediinsight-db
     databaseName: mediinsight
     user: renderuser
+    plan: free
     region: ohio
