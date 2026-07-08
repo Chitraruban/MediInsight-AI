@@ -20,7 +20,6 @@ public class ChatMessage {
     @Column(nullable = false)
     private String role; // USER or ASSISTANT
 
-    @Lob
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 

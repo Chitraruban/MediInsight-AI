@@ -20,7 +20,6 @@ public class LifestyleSuggestion {
     @Column(nullable = false)
     private LifestyleCategory category;
 
-    @Lob
     @Column(name = "suggestion_text", columnDefinition = "TEXT", nullable = false)
     private String suggestionText;
 

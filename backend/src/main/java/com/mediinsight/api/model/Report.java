@@ -28,11 +28,9 @@ public class Report {
     @Column(name = "risk_level", nullable = false)
     private String riskLevel;
 
-    @Lob
     @Column(name = "summary", columnDefinition = "TEXT")
     private String summary;
 
-    @Lob
     @Column(name = "disclaimer", columnDefinition = "TEXT")
     private String disclaimer;
 

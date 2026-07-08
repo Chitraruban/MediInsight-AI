@@ -29,11 +29,9 @@ public class ReportValue {
 
     private String status; // normal, high, low
 
-    @Lob
     @Column(name = "term_meaning", columnDefinition = "TEXT")
     private String termMeaning;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String explanation;
 

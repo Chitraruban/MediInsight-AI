@@ -24,7 +24,6 @@ public class ReportRisk {
 
     private String severity; // Low, Medium, High
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String explanation;
 

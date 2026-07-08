@@ -16,7 +16,6 @@ public class DoctorQuestion {
     @JsonIgnore
     private Report report;
 
-    @Lob
     @Column(name = "question_text", columnDefinition = "TEXT", nullable = false)
     private String questionText;
 

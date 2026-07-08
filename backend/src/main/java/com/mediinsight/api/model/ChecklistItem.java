@@ -16,7 +16,6 @@ public class ChecklistItem {
     @JsonIgnore
     private Report report;
 
-    @Lob
     @Column(name = "item_text", columnDefinition = "TEXT", nullable = false)
     private String itemText;
 
