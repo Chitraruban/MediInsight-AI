@@ -25,14 +25,14 @@ public class GeminiService {
     @Value("${GEMINI_API_KEY:}")
     private String apiKey;
 
-    @Value("${GEMINI_MODEL:gemini-2.5-pro}")
+    @Value("${GEMINI_MODEL:gemini-2.5-flash}")
     private String geminiModel;
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
     private String getGeminiUrl() {
-        String model = (geminiModel == null || geminiModel.trim().isEmpty()) ? "gemini-2.5-pro" : geminiModel;
+        String model = (geminiModel == null || geminiModel.trim().isEmpty()) ? "gemini-2.5-flash" : geminiModel;
         return "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=";
     }
 
