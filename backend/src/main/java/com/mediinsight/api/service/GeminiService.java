@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import jakarta.annotation.PostConstruct;
@@ -204,23 +205,27 @@ public class GeminiService {
 
         String url = getGeminiUrl() + apiKey;
         
-        // Retry up to 3 times with delay on rate limit errors
-        int maxRetries = 3;
+        // Retry up to 5 times with delay on rate limit or service unavailable errors
+        int maxRetries = 5;
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
                 ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
                 return extractTextFromResponse(response.getBody());
-            } catch (HttpClientErrorException.TooManyRequests e) {
-                if (attempt < maxRetries) {
-                    log.warn("Rate limited by Gemini API (attempt {}/{}). Waiting 30 seconds before retry...", attempt, maxRetries);
-                    try {
-                        Thread.sleep(30000); // Wait 30 seconds
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                        throw new RuntimeException("Interrupted while waiting for rate limit retry", ie);
+            } catch (HttpStatusCodeException e) {
+                if (e.getStatusCode().value() == 429 || e.getStatusCode().value() == 503) {
+                    if (attempt < maxRetries) {
+                        log.warn("API overloaded (429/503) from Gemini API (attempt {}/{}). Waiting 5 seconds before retry...", attempt, maxRetries);
+                        try {
+                            Thread.sleep(5000); // Wait 5 seconds to provide better UX
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                            throw new RuntimeException("Interrupted while waiting for API retry", ie);
+                        }
+                    } else {
+                        log.error("API retry limit exceeded after {} attempts.", maxRetries);
+                        throw e;
                     }
                 } else {
-                    log.error("Rate limit exceeded after {} attempts.", maxRetries);
                     throw e;
                 }
             }
@@ -266,20 +271,24 @@ public class GeminiService {
 
         String url = getGeminiUrl() + apiKey;
 
-        // Retry up to 3 times with delay on rate limit errors
-        int maxRetries = 3;
+        // Retry up to 5 times with delay on rate limit or service unavailable errors
+        int maxRetries = 5;
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
                 ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
                 return extractTextFromResponse(response.getBody());
-            } catch (HttpClientErrorException.TooManyRequests e) {
-                if (attempt < maxRetries) {
-                    log.warn("Rate limited by Gemini Vision API (attempt {}/{}). Waiting 30 seconds...", attempt, maxRetries);
-                    try {
-                        Thread.sleep(30000);
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                        throw new RuntimeException("Interrupted while waiting for rate limit retry", ie);
+            } catch (HttpStatusCodeException e) {
+                if (e.getStatusCode().value() == 429 || e.getStatusCode().value() == 503) {
+                    if (attempt < maxRetries) {
+                        log.warn("API overloaded (429/503) by Gemini Vision API (attempt {}/{}). Waiting 5 seconds...", attempt, maxRetries);
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                            throw new RuntimeException("Interrupted while waiting for API retry", ie);
+                        }
+                    } else {
+                        throw e;
                     }
                 } else {
                     throw e;
