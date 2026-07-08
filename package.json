@@ -1,0 +1,16 @@
+{
+  "name": "mediinsight-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root package.json to easily run frontend and backend together",
+  "scripts": {
+    "postinstall": "npm install --prefix frontend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "cd backend && mvn spring-boot:run",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "build:frontend": "npm run build --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
