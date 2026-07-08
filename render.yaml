@@ -7,10 +7,22 @@ services:
     rootDir: backend
     dockerfilePath: Dockerfile
     envVars:
-      - key: SPRING_DATASOURCE_URL
+      - key: DB_HOST
         fromDatabase:
           name: mediinsight-db
-          property: connectionString
+          property: host
+      - key: DB_NAME
+        fromDatabase:
+          name: mediinsight-db
+          property: database
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: mediinsight-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: mediinsight-db
+          property: password
       - key: GEMINI_API_KEY
         sync: false
 
