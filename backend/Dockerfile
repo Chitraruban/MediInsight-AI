@@ -23,4 +23,17 @@ ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
 COPY --from=build /app/target/mediinsight-api-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Create a startup script to handle the database connection string conversion for Render
+RUN echo '#!/bin/bash' > /app/start.sh && \
+    echo 'if [ -n "$SPRING_DATASOURCE_URL" ] && [[ "$SPRING_DATASOURCE_URL" == postgres://* ]]; then' >> /app/start.sh && \
+    echo '  export JDBC_URL=$(echo $SPRING_DATASOURCE_URL | sed "s/postgres:\/\//jdbc:postgresql:\/\//")' >> /app/start.sh && \
+    echo '  echo "Starting with PostgreSQL configuration"' >> /app/start.sh && \
+    echo '  exec java -jar app.jar --spring.datasource.url="$JDBC_URL" --spring.datasource.driver-class-name=org.postgresql.Driver --spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect' >> /app/start.sh && \
+    echo 'else' >> /app/start.sh && \
+    echo '  echo "Starting with default configuration"' >> /app/start.sh && \
+    echo '  exec java -jar app.jar' >> /app/start.sh && \
+    echo 'fi' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
+ENTRYPOINT ["/app/start.sh"]
