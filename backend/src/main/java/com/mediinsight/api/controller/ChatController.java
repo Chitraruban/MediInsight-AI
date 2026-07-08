@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/chat")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
+@CrossOrigin(origins = "*")
 public class ChatController {
 
     private static final Logger log = LoggerFactory.getLogger(ChatController.class);

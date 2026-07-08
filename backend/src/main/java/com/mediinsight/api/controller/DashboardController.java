@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/dashboard")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
+@CrossOrigin(origins = "*")
 public class DashboardController {
 
     private static final Logger log = LoggerFactory.getLogger(DashboardController.class);
