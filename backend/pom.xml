@@ -46,6 +46,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- PostgreSQL Connector -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- PDF Box for PDF Text Extraction -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>

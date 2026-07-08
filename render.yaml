@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: mediinsight-backend
+    env: docker
+    region: ohio
+    dockerfilePath: ./backend/Dockerfile
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: mediinsight-db
+          property: connectionString
+      - key: GEMINI_API_KEY
+        sync: false
+
+databases:
+  - name: mediinsight-db
+    databaseName: mediinsight
+    user: renderuser
+    region: ohio
